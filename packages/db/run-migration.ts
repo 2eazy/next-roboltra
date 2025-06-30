@@ -29,6 +29,14 @@ async function runMigration() {
     );
     await db.execute(sql.raw(tasksTableSQL));
     
+    // Create user_skills table
+    console.log("3. Creating user_skills table...");
+    const userSkillsSQL = fs.readFileSync(
+      path.join(__dirname, "./src/migrations/create-user-skills.sql"),
+      "utf-8"
+    );
+    await db.execute(sql.raw(userSkillsSQL));
+    
     console.log("All migrations completed successfully!");
     process.exit(0);
   } catch (error) {
