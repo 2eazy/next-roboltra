@@ -39,7 +39,7 @@ pnpm dev
 4. **Access the app:**
 - Homepage: http://localhost:3000
 - Sign in: http://localhost:3000/auth/signin
-- Dashboard: http://localhost:3000/dashboard
+- Dashboard: http://localhost:3000/dashboard (protected route)
 
 ### Test Credentials
 
@@ -52,6 +52,12 @@ pnpm dev
 next-roboltra/
 ├── apps/
 │   └── web/                 # Next.js application
+│       ├── app/
+│       │   ├── (protected)/ # Authenticated routes
+│       │   └── auth/        # Authentication pages
+│       └── components/
+│           ├── dashboard/   # Dashboard components
+│           └── navigation.tsx
 ├── packages/
 │   ├── db/                  # Database schema and utilities
 │   └── auth/                # Authentication helpers
@@ -79,8 +85,12 @@ pnpm db:studio    # Open Drizzle Studio
 ## Features
 
 - User authentication with NextAuth
-- Protected routes
+- Protected routes and dashboard
 - PostgreSQL database with Drizzle ORM
 - Tailwind CSS for styling
 - TypeScript for type safety
 - Monorepo structure for scalability
+- Gamified task management system
+- Family leaderboards and activity feed
+- Points, XP, and leveling system
+- Badge collection system
