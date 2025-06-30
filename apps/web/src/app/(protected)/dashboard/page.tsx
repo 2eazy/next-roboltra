@@ -3,11 +3,13 @@ import { db } from "@roboltra/db";
 import { sql } from "drizzle-orm";
 import { gameEngine } from "@roboltra/game-engine";
 import { getAvailableTasks } from "@/lib/actions/tasks";
+import { getActiveCommunity } from "@/lib/actions/communities";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { TaskList } from "@/components/dashboard/task-list";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
 import { LeaderboardPreview } from "@/components/dashboard/leaderboard-preview";
 import { RecentBadges } from "@/components/dashboard/recent-badges";
+import Link from "next/link";
 
 async function getDashboardData(userId: string) {
   // Get comprehensive user stats from game engine
@@ -52,6 +54,33 @@ async function getDashboardData(userId: string) {
 export default async function DashboardPage() {
   const session = await auth();
   if (!session?.user) return null;
+
+  const currentCommunity = await getActiveCommunity();
+  
+  if (!currentCommunity) {
+    return (
+      <div className="max-w-2xl mx-auto text-center py-12">
+        <h1 className="text-3xl font-bold mb-4">Welcome to Roboltra!</h1>
+        <p className="text-gray-600 mb-8">
+          To get started, you need to create or join a community.
+        </p>
+        <div className="flex gap-4 justify-center">
+          <Link
+            href="/community/create"
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700"
+          >
+            Create a Community
+          </Link>
+          <Link
+            href="/community/join"
+            className="bg-green-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-green-700"
+          >
+            Join with Code
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const { stats, availableTasks } = await getDashboardData(session.user.id);
   

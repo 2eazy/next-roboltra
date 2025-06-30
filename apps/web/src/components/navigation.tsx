@@ -4,15 +4,18 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { useState } from "react";
+import { CommunitySelector } from "./community-selector";
+import type { Community } from "@/lib/actions/communities";
 
 interface NavigationProps {
   user: {
     email?: string | null;
     name?: string | null;
   };
+  currentCommunity: Community | null;
 }
 
-export function Navigation({ user }: NavigationProps) {
+export function Navigation({ user, currentCommunity }: NavigationProps) {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -56,6 +59,7 @@ export function Navigation({ user }: NavigationProps) {
           </div>
 
           <div className="hidden md:flex items-center space-x-4">
+            <CommunitySelector currentCommunity={currentCommunity} />
             <span className="text-sm text-gray-700">
               {user.name || user.email}
             </span>
