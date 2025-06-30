@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth";
 import { db } from "@roboltra/db";
-import { users, userStats } from "@roboltra/db/schema";
-import { eq, and, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
+import { gameEngine } from "@roboltra/game-engine";
+import { getAvailableTasks } from "@/lib/actions/tasks";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { TaskList } from "@/components/dashboard/task-list";
 import { ActivityFeed } from "@/components/dashboard/activity-feed";
@@ -9,7 +10,10 @@ import { LeaderboardPreview } from "@/components/dashboard/leaderboard-preview";
 import { RecentBadges } from "@/components/dashboard/recent-badges";
 
 async function getDashboardData(userId: string) {
-  // Get user stats
+  // Get comprehensive user stats from game engine
+  const gameStats = await gameEngine.getUserStats(userId);
+  
+  // Get user stats from database for additional info
   const statsQuery = sql`
     SELECT * FROM user_stats
     WHERE user_id = ${userId}
@@ -17,33 +21,27 @@ async function getDashboardData(userId: string) {
   `;
   
   const statsResult = await db.execute(statsQuery);
-  const stats = statsResult.rows[0] || {
+  const dbStats = statsResult.rows[0] || {
     total_points: 0,
     current_streak: 0,
-    current_stamina: 100,
-    max_stamina: 100,
-    level: 1,
+    longest_streak: 0,
   };
 
-  // Get available tasks - for MVP, we'll return mock data
-  const availableTasks = [
-    {
-      id: "1",
-      title: "Clean the kitchen",
-      description: "Wipe down counters and do dishes",
-      points: 20,
-      category: "standard",
-      stamina_cost: 10,
-    },
-    {
-      id: "2",
-      title: "Take out trash",
-      description: "Empty all bins and replace bags",
-      points: 10,
-      category: "quick",
-      stamina_cost: 5,
-    },
-  ];
+  // Combine stats
+  const stats = {
+    total_points: Number(dbStats.total_points) || 0,
+    current_streak: Number(dbStats.current_streak) || 0,
+    current_stamina: gameStats.stamina.current,
+    max_stamina: gameStats.stamina.max,
+    level: gameStats.level.currentLevel,
+    current_xp: gameStats.level.currentXP,
+    xp_for_next_level: gameStats.level.xpForNextLevel,
+    progress_percentage: gameStats.level.progressPercentage,
+    points_today: gameStats.pointsToday,
+  };
+
+  // Get available tasks
+  const availableTasks = await getAvailableTasks();
 
   return {
     stats,
@@ -56,6 +54,11 @@ export default async function DashboardPage() {
   if (!session?.user) return null;
 
   const { stats, availableTasks } = await getDashboardData(session.user.id);
+  
+  // Filter to show only truly available tasks (not claimed by others)
+  const myAvailableTasks = availableTasks.filter(
+    task => task.status === "available" || task.claimed_by === session.user.id
+  );
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -71,7 +74,7 @@ export default async function DashboardPage() {
         <section className="lg:col-span-2 space-y-6">
           <div className="bg-white rounded-lg shadow p-6">
             <h2 className="text-xl font-semibold mb-4">Available Tasks</h2>
-            <TaskList tasks={availableTasks} />
+            <TaskList tasks={myAvailableTasks} />
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">

@@ -2,15 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-
-interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  points: number;
-  category: string;
-  stamina_cost: number;
-}
+import { Task } from "@/lib/actions/tasks";
 
 interface TaskListProps {
   tasks: Task[];
@@ -36,12 +28,7 @@ export function TaskList({ tasks }: TaskListProps) {
   };
 
   const handleClaim = async (taskId: string) => {
-    setIsClaiming(taskId);
-    // TODO: Implement task claiming
-    setTimeout(() => {
-      setIsClaiming(null);
-      router.push(`/tasks/${taskId}`);
-    }, 1000);
+    router.push("/tasks");
   };
 
   if (tasks.length === 0) {
