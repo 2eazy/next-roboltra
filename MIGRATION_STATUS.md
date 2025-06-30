@@ -22,12 +22,13 @@
 ## In Progress 🚧
 
 ### Phase 3: Game Engine
-- [ ] Create game-engine package
-- [ ] Point calculation system
-- [ ] Stamina regeneration logic
-- [ ] XP and leveling algorithms
-- [ ] Skill tree progression
-- [ ] Streak tracking
+- [x] Create game-engine package
+- [x] Point calculation system with streak bonuses
+- [x] Stamina regeneration logic (20/hour)
+- [x] XP and leveling algorithms
+- [x] Skill tree XP tracking
+- [x] Streak tracking and milestones
+- [x] Unified GameEngine facade for coordinated operations
 
 ## Pending 📋
 
