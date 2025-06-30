@@ -5,6 +5,7 @@ import { claimTask, completeTask, deleteTask } from "@/lib/actions/tasks";
 import type { Task } from "@/types/task";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { SuccessNotification } from "@/components/ui/success-notification";
 
 interface TaskCardProps {
   task: Task;
@@ -16,6 +17,7 @@ export function TaskCard({ task, currentUserId }: TaskCardProps) {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [completionResult, setCompletionResult] = useState<any>(null);
 
   const getCategoryColor = (category: string) => {
     switch (category) {
@@ -51,15 +53,10 @@ export function TaskCard({ task, currentUserId }: TaskCardProps) {
     startTransition(async () => {
       try {
         const result = await completeTask(task.id);
+        setCompletionResult(result);
         setShowSuccess(true);
         
-        // Show level up notification if applicable
-        if (result.leveledUp) {
-          alert(`🎉 Level Up! You're now level ${result.newLevel}!`);
-        }
-        
         setTimeout(() => {
-          setShowSuccess(false);
           router.refresh();
         }, 2000);
       } catch (err) {
@@ -86,7 +83,19 @@ export function TaskCard({ task, currentUserId }: TaskCardProps) {
   const isCompleted = task.status === "completed";
 
   return (
-    <div
+    <>
+      <SuccessNotification
+        show={showSuccess && completionResult}
+        points={completionResult?.points?.breakdown || { base: 0, streakBonus: 0, total: 0 }}
+        streak={completionResult?.streak}
+        leveledUp={completionResult?.leveledUp}
+        newLevel={completionResult?.newLevel}
+        onClose={() => {
+          setShowSuccess(false);
+          setCompletionResult(null);
+        }}
+      />
+      <div
       className={cn(
         "bg-white rounded-lg shadow-sm border p-4 transition-all",
         isPending && "opacity-75",
@@ -128,12 +137,6 @@ export function TaskCard({ task, currentUserId }: TaskCardProps) {
           <p className="text-sm text-red-600">{error}</p>
         )}
 
-        {showSuccess && (
-          <p className="text-sm text-green-600">
-            {isCompleted ? "Task completed! 🎉" : "Task claimed!"}
-          </p>
-        )}
-
         <div className="flex gap-2">
           {task.status === "available" && (
             <button
@@ -173,5 +176,6 @@ export function TaskCard({ task, currentUserId }: TaskCardProps) {
         </div>
       </div>
     </div>
+    </>
   );
 }

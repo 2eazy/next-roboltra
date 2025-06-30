@@ -121,10 +121,10 @@ export class PointsService {
    * Calculate streak bonus
    */
   private calculateStreakBonus(baseAmount: number, streakDays: number): number {
-    if (streakDays === 0) return 0;
+    if (streakDays < 3) return 0; // No bonus until 3-day streak
     
     const multiplier = Math.min(
-      (streakDays / 10) * gameConfig.streaks.bonusMultiplier,
+      Math.floor(streakDays / 10) * gameConfig.streaks.bonusMultiplier,
       gameConfig.streaks.maxMultiplier - 1
     );
     return Math.floor(baseAmount * multiplier);
