@@ -1,15 +1,17 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Task, claimTask, completeTask, deleteTask } from "@/lib/actions/tasks";
+import { claimTask, completeTask, deleteTask } from "@/lib/actions/tasks";
+import type { Task } from "@/types/task";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 interface TaskCardProps {
   task: Task;
+  currentUserId?: string;
 }
 
-export function TaskCard({ task }: TaskCardProps) {
+export function TaskCard({ task, currentUserId }: TaskCardProps) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -80,7 +82,6 @@ export function TaskCard({ task }: TaskCardProps) {
     });
   };
 
-  const isOwner = task.claimed_by === task.created_by;
   const isClaimed = task.status === "claimed";
   const isCompleted = task.status === "completed";
 
@@ -144,7 +145,7 @@ export function TaskCard({ task }: TaskCardProps) {
             </button>
           )}
 
-          {task.status === "claimed" && task.claimed_by === task.created_by && (
+          {task.status === "claimed" && task.claimed_by === currentUserId && (
             <button
               onClick={handleComplete}
               disabled={isPending}
@@ -160,7 +161,7 @@ export function TaskCard({ task }: TaskCardProps) {
             </div>
           )}
 
-          {task.status === "available" && isOwner && (
+          {task.status === "available" && task.created_by === currentUserId && (
             <button
               onClick={handleDelete}
               disabled={isPending}

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Task } from "@/lib/actions/tasks";
+import type { Task } from "@/types/task";
 
 interface TaskListProps {
   tasks: Task[];

@@ -1,9 +1,12 @@
+import { auth } from "@/lib/auth";
 import { getAvailableTasks, getMyTasks } from "@/lib/actions/tasks";
 import { CreateTaskForm } from "@/components/tasks/create-task-form";
 import { TaskCard } from "@/components/tasks/task-card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default async function TasksPage() {
+  const session = await auth();
+  const currentUserId = session?.user?.id;
   const [availableTasks, myTasks] = await Promise.all([
     getAvailableTasks(),
     getMyTasks(),
@@ -41,7 +44,7 @@ export default async function TasksPage() {
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {availableTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
+                <TaskCard key={task.id} task={task} currentUserId={currentUserId} />
               ))}
             </div>
           )}
@@ -56,7 +59,7 @@ export default async function TasksPage() {
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {claimedTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
+                <TaskCard key={task.id} task={task} currentUserId={currentUserId} />
               ))}
             </div>
           )}
@@ -71,7 +74,7 @@ export default async function TasksPage() {
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {completedTasks.map((task) => (
-                <TaskCard key={task.id} task={task} />
+                <TaskCard key={task.id} task={task} currentUserId={currentUserId} />
               ))}
             </div>
           )}

@@ -3,23 +3,13 @@
 import { auth } from "@/lib/auth";
 import { db } from "@roboltra/db";
 import { sql } from "drizzle-orm";
-import { gameEngine, TaskCategory } from "@roboltra/game-engine";
+import { gameEngine } from "@roboltra/game-engine";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import type { Task } from "@/types/task";
+import type { TaskCategory } from "@/lib/game-config";
 
-export interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  points: number;
-  category: TaskCategory;
-  stamina_cost: number;
-  status: "available" | "claimed" | "completed";
-  claimed_by?: string;
-  claimed_at?: Date;
-  created_by: string;
-  created_at: Date;
-}
+export type { Task } from "@/types/task";
 
 /**
  * Create a new task
@@ -38,8 +28,8 @@ export async function createTask(formData: FormData) {
     throw new Error("Title and category are required");
   }
 
-  // Get points and stamina cost from game config
-  const { gameConfig } = await import("@roboltra/game-engine");
+  // Get points and stamina cost from client-safe config
+  const { gameConfig } = await import("@/lib/game-config");
   const points = gameConfig.points.taskCompletion[category];
   const staminaCost = gameConfig.stamina.costs.claimTask[category];
 

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createTask } from "@/lib/actions/tasks";
-import { gameConfig } from "@roboltra/game-engine";
+import { gameConfig } from "@/lib/game-config";
 
 export function CreateTaskForm() {
   const [isOpen, setIsOpen] = useState(false);
