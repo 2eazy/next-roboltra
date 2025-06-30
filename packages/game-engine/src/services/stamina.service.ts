@@ -127,10 +127,11 @@ export class StaminaService {
       INSERT INTO user_stats (
         user_id,
         total_points,
+        total_xp,
+        level,
         current_streak,
         current_stamina,
         max_stamina,
-        level,
         last_stamina_update,
         created_at,
         updated_at
@@ -138,9 +139,10 @@ export class StaminaService {
         ${userId},
         0,
         0,
-        ${gameConfig.stamina.base},
-        ${gameConfig.stamina.base},
         1,
+        0,
+        ${gameConfig.stamina.base},
+        ${gameConfig.stamina.base},
         NOW(),
         NOW(),
         NOW()

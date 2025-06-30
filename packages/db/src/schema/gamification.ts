@@ -9,6 +9,8 @@ export const userStats = pgTable('user_stats', {
   
   // Core stats
   totalPoints: integer('total_points').notNull().default(0),
+  totalXp: integer('total_xp').notNull().default(0),
+  level: integer('level').notNull().default(1),
   totalTasksCompleted: integer('total_tasks_completed').notNull().default(0),
   currentStreak: integer('current_streak').notNull().default(0),
   longestStreak: integer('longest_streak').notNull().default(0),
@@ -16,6 +18,7 @@ export const userStats = pgTable('user_stats', {
   
   // Stamina
   currentStamina: integer('current_stamina').notNull().default(100),
+  maxStamina: integer('max_stamina').notNull().default(100),
   lastStaminaUpdate: timestamp('last_stamina_update').notNull().defaultNow(),
   
   // Social
