@@ -1,0 +1,20 @@
+{
+  "version": "5",
+  "dialect": "pg",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1751238218995,
+      "tag": "0000_familiar_landau",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1751239261777,
+      "tag": "0001_great_glorian",
+      "breakpoints": true
+    }
+  ]
+}

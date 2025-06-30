@@ -1,0 +1,20 @@
+{
+  "name": "next-roboltra",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm -r build",
+    "start": "pnpm --filter web start",
+    "lint": "pnpm -r lint",
+    "db:push": "pnpm --filter @roboltra/db push",
+    "db:seed": "pnpm --filter @roboltra/db seed",
+    "db:studio": "pnpm --filter @roboltra/db studio",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.6.3"
+  }
+}
