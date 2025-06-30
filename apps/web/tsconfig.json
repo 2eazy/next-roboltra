@@ -19,7 +19,11 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@roboltra/db": ["../../packages/db/src/index.ts"],
+      "@roboltra/db/*": ["../../packages/db/src/*"],
+      "@roboltra/game-engine": ["../../packages/game-engine/src/index.ts"],
+      "@roboltra/game-engine/*": ["../../packages/game-engine/src/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
